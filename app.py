@@ -9,6 +9,7 @@ from mynlp import generate_questions
 
 
 app = Flask(__name__)
+
 app.secret_key = "dev-secret-key-change-this"  # replace before deploying
 
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "uploads")
@@ -180,5 +181,5 @@ def restart():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
 
