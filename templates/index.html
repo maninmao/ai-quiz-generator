@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartQuiz AI</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <div class="navbar">
+    <div class="brand">
+      <div class="brand-mark">Q</div>
+      AI Quiz Generator
+    </div>
+  </div>
+
+  <div class="upload-wrap">
+    <h1>Turn your notes into a quiz</h1>
+    <p class="subtitle">Upload a PDF of your lecture notes and we'll generate questions to test yourself with.</p>
+
+    <div class="upload-card">
+      {% if error %}
+        <div class="alert">{{ error }}</div>
+      {% endif %}
+
+      <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+        <div class="dropzone">
+          <div class="icon">↑</div>
+          <div style="font-weight:600; font-size:15px;">Choose a PDF file</div>
+          <!-- <div class="hint">Text-based PDFs work best (not scanned images)</div> -->
+          <input type="file" name="pdf_file" accept="application/pdf" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Generate quiz</button>
+      </form>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="num">1</div>
+        Upload your PDF notes
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        AI extracts key concepts
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        Take your quiz &amp; see your score
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

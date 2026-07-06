@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Results — {{ quiz_title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <div class="navbar">
+    <a class="back-link" href="{{ url_for('home') }}">&larr; Back</a>
+    <div class="brand">
+      <div class="brand-mark">Q</div>
+      SmartQuiz AI
+    </div>
+    <div style="width:60px;"></div>
+  </div>
+
+  <div class="result-wrap">
+
+    <div class="result-hero">
+      <div class="big-score">{{ percent }}%</div>
+      <div class="sub">{{ quiz_title }} — {{ correct }} of {{ total }} correct</div>
+      <div class="result-stats">
+        <div class="stat correct">
+          <div class="n">{{ correct }}</div>
+          <div class="l">Correct</div>
+        </div>
+        <div class="stat wrong">
+          <div class="n">{{ wrong }}</div>
+          <div class="l">Wrong</div>
+        </div>
+        <div class="stat">
+          <div class="n">{{ total }}</div>
+          <div class="l">Total</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="review-list">
+      {% for item in review %}
+        <div class="review-item {{ 'correct' if item.is_correct else 'incorrect' }}">
+          <div class="dot">{{ '✓' if item.is_correct else '✕' }}</div>
+          <div>
+            <div class="q">Q{{ item.number }}. {{ item.question }}</div>
+            <div class="a">
+              Correct answer: <b>{{ item.correct_answer }}</b>
+              {% if not item.is_correct %}
+                &nbsp;•&nbsp; Your answer: <b>{{ item.selected or 'Skipped' }}</b>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="result-actions">
+      <a class="btn btn-primary" href="{{ url_for('restart') }}">Try another PDF</a>
+    </div>
+
+  </div>
+
+</body>
+</html>

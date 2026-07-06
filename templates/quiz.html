@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ quiz_title }} — SmartQuiz AI</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <div class="navbar">
+    <a class="back-link" href="{{ url_for('home') }}">&larr; Back</a>
+    <div class="brand">
+      <div class="brand-mark">Q</div>
+      SmartQuiz AI
+    </div>
+    <div style="width:60px;"></div>
+  </div>
+
+  <div class="quiz-layout">
+
+    <div class="quiz-main">
+      <h1>{{ quiz_title }}</h1>
+
+      <div class="progress-row">
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="progress-label">{{ progress }}%</div>
+      </div>
+
+      <script>
+        const progressFill = document.getElementById('progress-fill');
+        if (progressFill) {
+        
+          progressFill.style.width = '{{ progress }}%';
+        }
+      </script>
+
+      <div class="question-card">
+        <div class="question-eyebrow">Question {{ current_index + 1 }} of {{ total }}</div>
+        <div class="question-text">{{ current_question.question }}</div>
+
+        {% if current_question.source %}
+        <details class="question-source">
+          <summary>Show source sentence</summary>
+          <p>&ldquo;{{ current_question.source }}&rdquo;</p>
+        </details>
+        {% endif %}
+
+        {% if current_answer %}
+          {# --- Already answered: review mode --- #}
+          <div class="options">
+            {% for opt in current_question.options %}
+              {% set cls = 'option disabled' %}
+              {% if opt == current_question.answer %}
+                {% set cls = cls ~ ' correct' %}
+              {% elif opt == current_answer.selected %}
+                {% set cls = cls ~ ' incorrect' %}
+              {% endif %}
+              <div class="{{ cls }}">
+                {{ opt }}
+                {% if opt == current_question.answer %}
+                  <span class="badge">✓ Correct answer</span>
+                {% elif opt == current_answer.selected %}
+                  <span class="badge">✕ Your answer</span>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="quiz-actions">
+            <a class="btn btn-secondary" href="{{ url_for('quiz', index=current_index - 1) }}"
+               {% if current_index == 0 %}style="visibility:hidden;"{% endif %}>← Previous</a>
+            <div class="spacer"></div>
+            {% if current_index + 1 < total %}
+              <a class="btn btn-primary" href="{{ url_for('quiz', index=current_index + 1) }}">Next →</a>
+            {% else %}
+              <a class="btn btn-primary" href="{{ url_for('result') }}">View results</a>
+            {% endif %}
+          </div>
+
+        {% else %}
+          {# --- Not answered yet: interactive form --- #}
+          <form action="{{ url_for('answer') }}" method="post" id="answer-form">
+            <input type="hidden" name="index" value="{{ current_index }}">
+            <div class="options" id="options-list">
+              {% for opt in current_question.options %}
+                <label class="option" data-value="{{ opt }}">
+                  <input type="radio" name="selected" value="{{ opt }}" style="display:none;">
+                  {{ opt }}
+                </label>
+              {% endfor %}
+            </div>
+
+            <div class="quiz-actions">
+              <a class="btn btn-secondary" href="{{ url_for('quiz', index=current_index - 1) }}"
+                 {% if current_index == 0 %}style="visibility:hidden;"{% endif %}>← Previous</a>
+              <div class="spacer"></div>
+              <button type="submit" class="btn btn-primary" id="submit-btn" disabled>Submit answer</button>
+            </div>
+          </form>
+
+          <script>
+            const options = document.querySelectorAll('#options-list .option');
+            const submitBtn = document.getElementById('submit-btn');
+            options.forEach(opt => {
+              opt.addEventListener('click', () => {
+                options.forEach(o => o.classList.remove('selected'));
+                opt.classList.add('selected');
+                opt.querySelector('input').checked = true;
+                submitBtn.disabled = false;
+              });
+            });
+          </script>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="quiz-sidebar">
+      <div class="score-card">
+        <div class="score-value">{{ percent }}%</div>
+        <div class="score-label">
+          {% if answered_count > 0 %}
+            You got {{ correct_count }} of {{ answered_count }} correct
+          {% else %}
+            Answer questions to see your score
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="tracker">
+        {% for q in questions %}
+          {% set idx = loop.index0 %}
+          {% set a = answers.get(idx|string) %}
+          {% if a and a.correct %}
+            <a class="tracker-item correct" href="{{ url_for('quiz', index=idx) }}">
+              <div class="dot">✓</div> Question {{ idx + 1 }}
+            </a>
+          {% elif a and not a.correct %}
+            <a class="tracker-item incorrect" href="{{ url_for('quiz', index=idx) }}">
+              <div class="dot">✕</div> Question {{ idx + 1 }}
+            </a>
+          {% elif idx == current_index %}
+            <div class="tracker-item current">
+              <div class="dot"></div> Question {{ idx + 1 }}
+            </div>
+          {% elif idx <= max_reachable + 1 %}
+            <a class="tracker-item" href="{{ url_for('quiz', index=idx) }}">
+              <div class="dot"></div> Question {{ idx + 1 }}
+            </a>
+          {% else %}
+            <div class="tracker-item locked">
+              <div class="dot"></div> Question {{ idx + 1 }}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
