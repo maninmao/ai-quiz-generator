@@ -13,11 +13,26 @@ app = Flask(__name__)
 app.secret_key = "dev-secret-key-change-this"  # replace before deploying
 
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "uploads")
+# ALLOWED_EXTENSIONS = {"pdf"}
+
+# app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+# # Check if running on Vercel (Vercel sets this env var automatically)
+# if os.environ.get("VERCEL"):
+#     app.config['UPLOAD_FOLDER'] = '/tmp'
+# else:
+#     # Keeps it normal for your local laptop testing
+#     app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'uploads')
+# os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 ALLOWED_EXTENSIONS = {"pdf"}
 
-app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+# 1. Dynamically set the upload folder path based on the environment
+if os.environ.get("VERCEL"):
+    app.config['UPLOAD_FOLDER'] = '/tmp'
+else:
+    app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'uploads')
 
+# 2. Use the configuration path to safely create the directory
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
