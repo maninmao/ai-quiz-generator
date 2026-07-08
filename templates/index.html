@@ -5,12 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SmartQuiz AI</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> -->
 </head>
 <body>
 
-  <div class="navbar">
+  <!-- <div class="navbar">
     <div class="brand">
       <div class="brand-mark">Q</div>
+      AI Quiz Generator
+    </div>
+  </div> -->
+
+  <div class="navbar">
+    <div class="brand">
+      <img src="{{ url_for('static', filename='quiz_logo.png') }}" alt="AI Quiz Generator logo" class="brand-mark" />
       AI Quiz Generator
     </div>
   </div>

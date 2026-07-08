@@ -6,8 +6,9 @@
   --border: #e6e8f0;
   --text: #14162b;
   --muted: #6b7280;
-  --blue: #3358f4;
-  --blue-dark: #2544c9;
+  --blue-dark: #004ca8;
+  --blue: #003ea8;
+  /* --blue-dark: #2544c9; */
   --blue-tint: #eaefff;
   --green: #16a34a;
   --green-tint: #e3f9ea;
@@ -46,7 +47,16 @@ a { text-decoration: none; color: inherit; }
   font-size: 18px;
   letter-spacing: -0.02em;
 }
+
 .navbar .brand-mark {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;   /* circle crop matches the character's round shape */
+  object-fit: cover;
+  display: block;
+}
+
+/* .navbar .brand-mark {
   width: 30px;
   height: 30px;
   border-radius: 8px;
@@ -57,7 +67,7 @@ a { text-decoration: none; color: inherit; }
   color: white;
   font-size: 14px;
   font-weight: 800;
-}
+} */
 .navbar .back-link {
   display: flex;
   align-items: center;
@@ -288,7 +298,12 @@ a { text-decoration: none; color: inherit; }
   justify-content: space-between;
   gap: 12px;
 }
-.quiz-actions .btn { padding: 11px 24px; }
+/* .quiz-actions .btn { padding: 11px 24px; } */
+.quiz-actions .btn {
+  padding: 11px 24px;
+  width: auto;
+  min-width: 140px;
+}
 .quiz-actions .spacer { flex: 1; }
 
 /* ---------- Sidebar ---------- */
